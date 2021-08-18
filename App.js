@@ -3,6 +3,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { AppLoading } from 'expo'
 import { bootsrap } from './src/bootstrap';
 
+import { AppNavigation } from './src/navigation/AppNavigation'
+
 
 export default function App() {
   const [isReady, setIsReady] = useState(false)
@@ -14,8 +16,6 @@ export default function App() {
       onError={error => console.log(error)} />
   }
   return (
-    <View>
-      <Text>Open up App.js to start working on your app!</Text>
-    </View>
+    <AppNavigation />
   );
 }
