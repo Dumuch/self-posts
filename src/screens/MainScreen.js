@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Button, FlatList} from 'react-native';
 import { Post } from '../components/Post';
 
 import { DATA } from '../data'
