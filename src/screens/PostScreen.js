@@ -3,8 +3,6 @@ import { StyleSheet, Text, View } from 'react-native';
 
 export const PostScreen = ({ navigation }) => {
 
-
-
   return <View style={styles.center}>
     <Text>Показать книгу</Text>
   </View>
