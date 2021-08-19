@@ -7,9 +7,8 @@ import { DATA } from '../data'
 export const MainScreen = ({ navigation }) => {
 
 
-
-  const goToPost = () => {
-    navigation.navigate('Post')
+  const openPosthandler = post => {
+    navigation.navigate('Post', { postId: post.id, date: post.date })
   }
 
 
@@ -17,7 +16,7 @@ export const MainScreen = ({ navigation }) => {
     <View style={styles.wrapper}>
       <FlatList data={DATA}
         keyExtractor={post => post.id.toString()}
-        renderItem={({ item }) => <Post post={item} />
+        renderItem={({ item }) => <Post post={item} onOpen={openPosthandler} />
         } />
     </View>
   )

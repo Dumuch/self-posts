@@ -15,7 +15,7 @@ export function AppNavigation() {
     <NavigationContainer >
       <Stack.Navigator initialRouteName="Main" screenOptions={navigatorOptions}>
         <Stack.Screen name="Main" component={MainScreen} options={{ title: 'Блог' }} />
-        <Stack.Screen name="Post" component={PostScreen} options={{ title: 'Книга' }} />
+        <Stack.Screen name="Post" component={PostScreen} />
       </Stack.Navigator>
     </NavigationContainer >
   );
