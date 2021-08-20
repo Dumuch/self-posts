@@ -14,6 +14,11 @@ export const MainScreen = ({ navigation }) => {
       <HeaderButtons HeaderButtonComponent={AppheaderIcon}>         
         <Item title="Take photo" iconName="ios-camera" />      
       </HeaderButtons>
+    ),
+    headerLeft: (props) => (
+      <HeaderButtons HeaderButtonComponent={AppheaderIcon}>         
+        <Item title="Toggle Drawer" iconName="ios-menu" />      
+      </HeaderButtons>
     ) 
   })
 

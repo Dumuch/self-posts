@@ -1,17 +1,30 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { StyleSheet, Text, ScrollView, Image, Button, Alert} from 'react-native';
+import { AppheaderIcon } from '../components/AppHeaderIcon';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons'
+
 import { DATA } from '../data';
 import { THEME } from '../theme';
 
 export const PostScreen = ({ route, navigation }) => {
   const { postId, date } = route.params;
 
+  const post = DATA.find( p => p.id === postId)
+  const booked = post.booked
+  const iconName = booked ? 'ios-star' : 'ios-star-outline'
+
+  
   navigation.setOptions({ 
     title: postId, 
-    headerTitle: new Date(date).toLocaleDateString() 
+    headerTitle: new Date(date).toLocaleDateString(),
+    headerRight: (props) => (
+      <HeaderButtons HeaderButtonComponent={AppheaderIcon}>         
+        <Item title="Take photo" iconName={iconName} />      
+      </HeaderButtons>
+    ),
   })
 
-  const post = DATA.find( p => p.id === postId)
+
 
   const removeHandler = () => {
     Alert.alert(
