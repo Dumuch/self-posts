@@ -10,6 +10,7 @@ import { DATA } from '../data'
 export const MainScreen = ({ navigation }) => {
 
   navigation.setOptions({ 
+    title:'Главная',
     headerRight: (props) => (
       <HeaderButtons HeaderButtonComponent={AppheaderIcon}>         
         <Item title="Take photo" iconName="ios-camera" />      
