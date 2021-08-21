@@ -27,8 +27,8 @@ const navigatorOptions = {
   },
 }
 
-function MainStackScreen({navigator}) {
-  console.log(navigator)
+function MainStackScreen({navigation}) {
+
   return (
     <MainStack.Navigator initialRouteName="Main" screenOptions={navigatorOptions}>
       <MainStack.Screen name="Main" component={MainScreen} />
@@ -39,10 +39,9 @@ function MainStackScreen({navigator}) {
 
 const BookedStack = createNativeStackNavigator();
 
-function BookedStackScreen() {
+function BookedStackScreen({navigation}) {
   return (
-    <BookedStack.Navigator initialRouteName="Main" screenOptions={navigatorOptions}>
-      <BookedStack.Screen name="Main" component={MainScreen} />
+    <BookedStack.Navigator initialRouteName="Book" screenOptions={navigatorOptions}>
       <BookedStack.Screen name="Book" component={BookedScreen} />
     </BookedStack.Navigator>
   );
@@ -76,7 +75,7 @@ export function AppNavigation() {
     <NavigationContainer>
       <Tab.Navigator initialRouteName="Main" screenOptions={navigatorBookedOptions}>
         <Tab.Screen name="Main" component={MainStackScreen} />
-        <Tab.Screen name="Booked" component={BookedScreen}  />
+        <Tab.Screen name="Booked" component={BookedStackScreen}  />
       </Tab.Navigator>
     </NavigationContainer>
   );
