@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Ionicons } from '@expo/vector-icons';
 
 
@@ -12,6 +12,8 @@ import { THEME } from '../theme'
 import { MainScreen} from '../screens/MainScreen'
 import { PostScreen } from '../screens/PostScreen'
 import { BookedScreen } from '../screens/BookedScreen'
+import { AboutScreen } from '../screens/AboutScreen'
+import { CreateScreen } from '../screens/CreateScreen'
 
 
 
@@ -27,10 +29,9 @@ const navigatorOptions = {
   },
 }
 
-function MainStackScreen({navigation}) {
-
+function MainStackScreen() {
   return (
-    <MainStack.Navigator initialRouteName="Main" screenOptions={navigatorOptions}>
+    <MainStack.Navigator  screenOptions={navigatorOptions}>
       <MainStack.Screen name="Main" component={MainScreen} />
       <MainStack.Screen name="Post" component={PostScreen} />
     </MainStack.Navigator>
@@ -39,10 +40,11 @@ function MainStackScreen({navigation}) {
 
 const BookedStack = createNativeStackNavigator();
 
-function BookedStackScreen({navigation}) {
+function BookedStackScreen() {
   return (
-    <BookedStack.Navigator initialRouteName="Book" screenOptions={navigatorOptions}>
+    <BookedStack.Navigator screenOptions={navigatorOptions}>
       <BookedStack.Screen name="Book" component={BookedScreen} />
+      <BookedStack.Screen name="Post" component={PostScreen} />
     </BookedStack.Navigator>
   );
 }
@@ -70,14 +72,46 @@ const navigatorBookedOptions = ({ route }) => ({
 })
 
 
-export function AppNavigation() {
+function TabNavigation() {
   return (
-    <NavigationContainer>
-      <Tab.Navigator initialRouteName="Main" screenOptions={navigatorBookedOptions}>
-        <Tab.Screen name="Main" component={MainStackScreen} />
-        <Tab.Screen name="Booked" component={BookedStackScreen}  />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <Tab.Navigator screenOptions={navigatorBookedOptions}>
+      <Tab.Screen name="Main" component={MainStackScreen} />
+      <Tab.Screen name="Booked" component={BookedStackScreen}  />
+    </Tab.Navigator>
   );
 }
 
+const AboutStack = createNativeStackNavigator();
+
+function AboutStackScreen() {
+  return (
+    <AboutStack.Navigator screenOptions={navigatorOptions}>
+      <AboutStack.Screen name="About" component={AboutScreen} />
+    </AboutStack.Navigator>
+  );
+}
+
+const CreateStack = createNativeStackNavigator();
+
+function CreateStackScreen() {
+  return (
+    <CreateStack.Navigator  screenOptions={navigatorOptions}>
+      <CreateStack.Screen name="Create" component={CreateScreen} />
+    </CreateStack.Navigator>
+  );
+}
+
+
+const Drawer = createDrawerNavigator();
+
+export function AppNavigation() {
+  return (
+    <NavigationContainer>
+      <Drawer.Navigator screenOptions={{headerShown: false, drawerActiveTintColor: 'tomato'}}>
+        <Drawer.Screen name="PostTabs" component={TabNavigation} options={{drawerLabel: 'Главная', drawerIcon:() => {return (<Ionicons name='star'/>)}}} />
+        <Drawer.Screen name="About" component={AboutStackScreen} options={{drawerLabel: 'О приложении'}} />
+        <Drawer.Screen name="Create" component={CreateStackScreen} options={{drawerLabel: 'Новый пост'}} />
+      </Drawer.Navigator>
+    </NavigationContainer>
+  );
+}

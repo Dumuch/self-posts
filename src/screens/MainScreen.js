@@ -13,12 +13,12 @@ export const MainScreen = ({ navigation }) => {
     title:'Главная',
     headerRight: (props) => (
       <HeaderButtons HeaderButtonComponent={AppheaderIcon}>         
-        <Item title="Take photo" iconName="ios-camera" />      
+        <Item title="Take photo" iconName="ios-camera" onPress={()=>navigation.navigate('Create')}/>      
       </HeaderButtons>
     ),
     headerLeft: (props) => (
       <HeaderButtons HeaderButtonComponent={AppheaderIcon}>         
-        <Item title="Toggle Drawer" iconName="ios-menu" />      
+        <Item title="Toggle Drawer" iconName="ios-menu" onPress={()=>navigation.toggleDrawer()} />      
       </HeaderButtons>
     ) 
   })

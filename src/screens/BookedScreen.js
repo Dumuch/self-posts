@@ -13,7 +13,7 @@ export const BookedScreen = ({ navigation }) => {
     title:'Избранное',
     headerLeft: (props) => (
       <HeaderButtons HeaderButtonComponent={AppheaderIcon}>         
-        <Item title="Toggle Drawer" iconName="ios-menu" />      
+        <Item title="Toggle Drawer" iconName="ios-menu" onPress={()=>navigation.toggleDrawer()} />      
       </HeaderButtons>
     ) 
   })
