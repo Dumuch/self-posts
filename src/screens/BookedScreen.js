@@ -18,7 +18,6 @@ export const BookedScreen = ({ navigation }) => {
     ) 
   })
 
-
   const openPosthandler = post => {
     navigation.navigate('Post', { postId: post.id, date: post.date })
   }
