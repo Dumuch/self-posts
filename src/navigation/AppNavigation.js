@@ -30,6 +30,7 @@ const navigatorOptions = {
 }
 
 function MainStackScreen() {
+
   return (
     <MainStack.Navigator  screenOptions={navigatorOptions}>
       <MainStack.Screen name="Main" component={MainScreen} />
@@ -43,7 +44,7 @@ const BookedStack = createNativeStackNavigator();
 function BookedStackScreen() {
   return (
     <BookedStack.Navigator screenOptions={navigatorOptions}>
-      <BookedStack.Screen name="Book" component={BookedScreen} />
+      <BookedStack.Screen name="Booked" component={BookedScreen} />
       <BookedStack.Screen name="Post" component={PostScreen} />
     </BookedStack.Navigator>
   );
