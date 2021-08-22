@@ -5,15 +5,14 @@ import { StyleSheet, Text, ScrollView, Image, Button, Alert} from 'react-native'
 import { AppheaderIcon } from '../components/AppHeaderIcon';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 
-import { DATA } from '../data';
 import { THEME } from '../theme';
-import { toggleBooked } from '../store/actions/post';
+import { removePost, toggleBooked } from '../store/actions/post';
 
 export const PostScreen = ({ route, navigation }) => {
   const disptach = useDispatch()
   const { postId, date } = route.params;
 
-  const post = DATA.find( p => p.id === postId)
+  const post = useSelector(state => state.post.allPosts.find(p => p.id === postId))
   const booked = useSelector(state => state.post.bookedPosts.some(post => post.id === postId))
 
   // const booked = post.booked
@@ -55,9 +54,17 @@ export const PostScreen = ({ route, navigation }) => {
           onPress: () => console.log("Cancel Pressed"),
           style: "cancel"
         },
-        { text: "Да", onPress: () => console.log("OK Pressed") }
+        { text: "Да", onPress: () => {
+          navigation.navigate('Main')  
+          disptach(removePost(postId))
+          } 
+        }
       ]
     );
+  }
+
+  if(!post) {
+    return null
   }
 
   return (
