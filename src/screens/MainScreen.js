@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { StyleSheet, Text, View, Button, FlatList} from 'react-native';
 import { AppheaderIcon } from '../components/AppHeaderIcon';
-
+import {useDispatch, useSelector} from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 import { Post } from '../components/Post';
+import { loadPosts } from '../store/actions/post';
 
-import { DATA } from '../data'
 
 export const MainScreen = ({ navigation }) => {
 
@@ -28,10 +28,18 @@ export const MainScreen = ({ navigation }) => {
     navigation.navigate('Post', { postId: post.id, date: post.date })
   }
 
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(loadPosts())
+  }, [dispatch])
+
+  const allPosts = useSelector(state => state.post.allPosts)
+
 
   return (
     <View style={styles.wrapper}>
-      <FlatList data={DATA}
+      <FlatList data={allPosts}
         keyExtractor={post => post.id.toString()}
         renderItem={({ item }) => <Post post={item} onOpen={openPosthandler} />
         } />
