@@ -1,17 +1,36 @@
-import React, {useEffect} from 'react';
+import React, { useEffect, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux'
 import { StyleSheet, Text, ScrollView, Image, Button, Alert} from 'react-native';
+
 import { AppheaderIcon } from '../components/AppHeaderIcon';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 
 import { DATA } from '../data';
 import { THEME } from '../theme';
+import { toggleBooked } from '../store/actions/post';
 
 export const PostScreen = ({ route, navigation }) => {
+  const disptach = useDispatch()
   const { postId, date } = route.params;
 
   const post = DATA.find( p => p.id === postId)
-  const booked = post.booked
+  const booked = useSelector(state => state.post.bookedPosts.some(post => post.id === postId))
+
+  // const booked = post.booked
   const iconName = booked ? 'ios-star' : 'ios-star-outline'
+
+  const toggleHandler = useCallback(() => {
+    console.log(postId)
+    disptach(toggleBooked(postId))
+  }, [disptach, postId])
+
+  useEffect(() => {
+    navigation.setParams({toggleHandler})
+  }, [])
+
+  useEffect(() => {
+    navigation.setParams({booked})
+  }, [booked])
 
   
   navigation.setOptions({ 
@@ -19,7 +38,7 @@ export const PostScreen = ({ route, navigation }) => {
     headerTitle: new Date(date).toLocaleDateString(),
     headerRight: (props) => (
       <HeaderButtons HeaderButtonComponent={AppheaderIcon}>         
-        <Item title="Take photo" iconName={iconName} />      
+        <Item title="Take photo" iconName={iconName} onPress={toggleHandler} />      
       </HeaderButtons>
     ),
   })
