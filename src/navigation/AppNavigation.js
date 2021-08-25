@@ -1,118 +1,123 @@
-import * as React from 'react';
-import { Platform } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Ionicons } from '@expo/vector-icons';
-
-
-import { THEME } from '../theme'
-
-import { MainScreen} from '../screens/MainScreen'
+import React from 'react'
+import { createAppContainer, ThemeColors } from 'react-navigation'
+import { createStackNavigator } from 'react-navigation-stack'
+import { createBottomTabNavigator } from 'react-navigation-tabs'
+import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs'
+import { createDrawerNavigator } from 'react-navigation-drawer'
+import { Platform } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import { MainScreen } from '../screens/MainScreen'
 import { PostScreen } from '../screens/PostScreen'
-import { BookedScreen } from '../screens/BookedScreen'
 import { AboutScreen } from '../screens/AboutScreen'
 import { CreateScreen } from '../screens/CreateScreen'
-
-
-
-const MainStack = createNativeStackNavigator();
+import { BookedScreen } from '../screens/BookedScreen'
+import { THEME } from '../theme'
 
 const navigatorOptions = {
-  headerStyle: {
-    backgroundColor: Platform.OS === 'android' ? THEME.MAIN_COLOR : THEME.WHITE_COLOR,
+  defaultNavigationOptions: {
+    headerStyle: {
+      backgroundColor: Platform.OS === 'android' ? THEME.MAIN_COLOR : '#fff'
+    },
+    headerTintColor: Platform.OS === 'android' ? '#fff' : THEME.MAIN_COLOR
+  }
+}
+
+const PostNavigator = createStackNavigator(
+  {
+    Main: MainScreen,
+    Post: PostScreen
   },
-  headerTintColor: Platform.OS === 'android' ? THEME.WHITE_COLOR : THEME.MAIN_COLOR,
-  headerTitleStyle: {
-    fontWeight: 'bold',
+  navigatorOptions
+)
+
+const BookedNavigator = createStackNavigator(
+  {
+    Booked: BookedScreen,
+    Post: PostScreen
   },
-}
+  navigatorOptions
+)
 
-function MainStackScreen() {
-
-  return (
-    <MainStack.Navigator  screenOptions={navigatorOptions}>
-      <MainStack.Screen name="Main" component={MainScreen} />
-      <MainStack.Screen name="Post" component={PostScreen} />
-    </MainStack.Navigator>
-  );
-}
-
-const BookedStack = createNativeStackNavigator();
-
-function BookedStackScreen() {
-  return (
-    <BookedStack.Navigator screenOptions={navigatorOptions}>
-      <BookedStack.Screen name="Booked" component={BookedScreen} />
-      <BookedStack.Screen name="Post" component={PostScreen} />
-    </BookedStack.Navigator>
-  );
-}
-
-
-const Tab = createBottomTabNavigator();
-
-const navigatorBookedOptions = ({ route }) => ({
-  tabBarIcon: ({ focused, color, size }) => {
-    let iconName;
-
-    if (route.name === 'Main') {
-      iconName = focused
-        ? 'ios-information-circle'
-        : 'ios-information';
-    } else if (route.name === 'Booked') {
-      iconName = focused ? 'ios-star' : 'ios-star';
+const bottomTabsConfig = {
+  Post: {
+    screen: PostNavigator,
+    navigationOptions: {
+      tabBarLabel: 'Все',
+      tabBarIcon: info => (
+        <Ionicons name='ios-albums' size={25} color={info.tintColor} />
+      )
     }
-
-    return <Ionicons name={iconName} size={size} color={color} />; 
   },
-  tabBarActiveTintColor: 'tomato',
-  tabBarInactiveTintColor: 'gray',
-  headerShown: false 
-})
-
-
-function TabNavigation() {
-  return (
-    <Tab.Navigator screenOptions={navigatorBookedOptions}>
-      <Tab.Screen name="Main" component={MainStackScreen} />
-      <Tab.Screen name="Booked" component={BookedStackScreen}  />
-    </Tab.Navigator>
-  );
+  Booked: {
+    screen: BookedNavigator,
+    navigationOptions: {
+      tabBarLabel: 'Избранное',
+      tabBarIcon: info => (
+        <Ionicons name='ios-star' size={25} color={info.tintColor} />
+      )
+    }
+  }
 }
 
-const AboutStack = createNativeStackNavigator();
+const BottomNavigator =
+  Platform.OS === 'android'
+    ? createMaterialBottomTabNavigator(bottomTabsConfig, {
+        activeTintColor: '#fff',
+        shifting: true,
+        barStyle: {
+          backgroundColor: THEME.MAIN_COLOR
+        }
+      })
+    : createBottomTabNavigator(bottomTabsConfig, {
+        tabBarOptions: {
+          activeTintColor: THEME.MAIN_COLOR
+        }
+      })
 
-function AboutStackScreen() {
-  return (
-    <AboutStack.Navigator screenOptions={navigatorOptions}>
-      <AboutStack.Screen name="About" component={AboutScreen} />
-    </AboutStack.Navigator>
-  );
-}
+const AboutNavigator = createStackNavigator(
+  {
+    About: AboutScreen
+  },
+  navigatorOptions
+)
 
-const CreateStack = createNativeStackNavigator();
+const CreateNavigator = createStackNavigator(
+  {
+    Create: CreateScreen
+  },
+  navigatorOptions
+)
 
-function CreateStackScreen() {
-  return (
-    <CreateStack.Navigator  screenOptions={navigatorOptions}>
-      <CreateStack.Screen name="Create" component={CreateScreen} />
-    </CreateStack.Navigator>
-  );
-}
+const MainNavigator = createDrawerNavigator(
+  {
+    PostTabs: {
+      screen: BottomNavigator,
+      navigationOptions: {
+        drawerLabel: 'Главная'
+        // drawerIcon: <Ionicons name='ios-star' />
+      }
+    },
+    About: {
+      screen: AboutNavigator,
+      navigationOptions: {
+        drawerLabel: 'О приложении'
+      }
+    },
+    Create: {
+      screen: CreateNavigator,
+      navigationOptions: {
+        drawerLabel: 'Новый пост'
+      }
+    }
+  },
+  {
+    contentOptions: {
+      activeTintColor: THEME.MAIN_COLOR,
+      labelStyle: {
+        fontFamily: 'open-bold'
+      }
+    }
+  }
+)
 
-
-const Drawer = createDrawerNavigator();
-
-export function AppNavigation() {
-  return (
-    <NavigationContainer>
-      <Drawer.Navigator screenOptions={{headerShown: false, drawerActiveTintColor: 'tomato'}}>
-        <Drawer.Screen name="PostTabs" component={TabNavigation} options={{drawerLabel: 'Главная', drawerIcon:() => {return (<Ionicons name='star'/>)}}} />
-        <Drawer.Screen name="About" component={AboutStackScreen} options={{drawerLabel: 'О приложении'}} />
-        <Drawer.Screen name="Create" component={CreateStackScreen} options={{drawerLabel: 'Новый пост'}} />
-      </Drawer.Navigator>
-    </NavigationContainer>
-  );
-}
+export const AppNavigation = createAppContainer(MainNavigator)

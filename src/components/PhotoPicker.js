@@ -1,26 +1,27 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
+import { View, StyleSheet, Image, Button, Alert } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
-import { StyleSheet, View, Image, Button } from 'react-native'
 import * as Permissions from 'expo-permissions'
 
 async function askForPermissions() {
-  const {status} = await Permissions.askAsync(
-    Permissions.CAMERA
+  const { status } = await Permissions.askAsync(
+    Permissions.CAMERA,
+    Permissions.CAMERA_ROLL
   )
-
-  if (status !== 'granted'){
-    console.log('Ошибка')
+  if (status !== 'granted') {
+    Alert.alert('Ошибка', 'Вы не дали прав на создание фото')
     return false
   }
-  return true 
+  return true
 }
 
 export const PhotoPicker = ({ onPick }) => {
   const [image, setImage] = useState(null)
+
   const takePhoto = async () => {
     const hasPermissions = await askForPermissions()
 
-    if(!hasPermissions){
+    if (!hasPermissions) {
       return
     }
 
@@ -32,14 +33,12 @@ export const PhotoPicker = ({ onPick }) => {
 
     setImage(img.uri)
     onPick(img.uri)
-    console.log(img)
   }
 
-
   return (
-    <View styles={styles.wrapper}>
-      <Button title='Сделать фото' onPress={takePhoto} /> 
-      {image && <Image style={styles.image} source={{uri: image}} />}
+    <View style={styles.wrapper}>
+      <Button title='Сделать фото' onPress={takePhoto} />
+      {image && <Image style={styles.image} source={{ uri: image }} />}
     </View>
   )
 }

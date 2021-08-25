@@ -1,45 +1,32 @@
-import React from 'react';
-import { StyleSheet, Text, View, Button, FlatList} from 'react-native';
-import { AppheaderIcon } from '../components/AppHeaderIcon';
-import { useSelector } from 'react-redux';
-
+import React from 'react'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
-import { Post } from '../components/Post';
-
+import { useSelector } from 'react-redux'
+import { AppHeaderIcon } from '../components/AppHeaderIcon'
+import { PostList } from '../components/PostList'
 
 export const BookedScreen = ({ navigation }) => {
-
-  navigation.setOptions({ 
-    title:'Избранное',
-    headerLeft: (props) => (
-      <HeaderButtons HeaderButtonComponent={AppheaderIcon}>         
-        <Item title="Toggle Drawer" iconName="ios-menu" onPress={()=>navigation.toggleDrawer()} />      
-      </HeaderButtons>
-    ) 
-  })
-
-  const openPosthandler = post => {
-    navigation.navigate('Post', { postId: post.id, date: post.date })
+  const openPostHandler = post => {
+    navigation.navigate('Post', {
+      postId: post.id,
+      date: post.date,
+      booked: post.booked
+    })
   }
 
   const bookedPosts = useSelector(state => state.post.bookedPosts)
 
-
-
-  return (
-    <View style={styles.wrapper}>
-      <FlatList data={bookedPosts}
-        keyExtractor={post => post.id.toString()}
-        renderItem={({ item }) => <Post post={item} onOpen={openPosthandler} />
-        } />
-    </View>
-  )
-
-
+  return <PostList data={bookedPosts} onOpen={openPostHandler} />
 }
 
-const styles = StyleSheet.create({
-  wrapper: {
-    padding: 10
-  }
+BookedScreen.navigationOptions = ({ navigation }) => ({
+  headerTitle: 'Избранное',
+  headerLeft: (
+    <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
+      <Item
+        title='Toggle Drawer'
+        iconName='ios-menu'
+        onPress={() => navigation.toggleDrawer()}
+      />
+    </HeaderButtons>
+  )
 })

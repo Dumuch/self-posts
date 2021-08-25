@@ -1,79 +1,97 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react'
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Button,
+  ScrollView,
+  Alert
+} from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { StyleSheet, Text, ScrollView, Image, Button, Alert} from 'react-native';
+import { Item, HeaderButtons } from 'react-navigation-header-buttons'
+import { AppHeaderIcon } from '../components/AppHeaderIcon'
+import { THEME } from '../theme'
+import { toogleBooked, removePost } from '../store/actions/post'
 
-import { AppheaderIcon } from '../components/AppHeaderIcon';
-import { HeaderButtons, Item } from 'react-navigation-header-buttons'
+export const PostScreen = ({ navigation }) => {
+  const dispatch = useDispatch()
+  const postId = navigation.getParam('postId')
 
-import { THEME } from '../theme';
-import { removePost, toggleBooked } from '../store/actions/post';
+  const post = useSelector(state =>
+    state.post.allPosts.find(p => p.id === postId)
+  )
 
-export const PostScreen = ({ route, navigation }) => {
-  const disptach = useDispatch()
-  const { postId, date } = route.params;
-
-  const post = useSelector(state => state.post.allPosts.find(p => p.id === postId))
-  const booked = useSelector(state => state.post.bookedPosts.some(post => post.id === postId))
-
-  // const booked = post.booked
-  const iconName = booked ? 'ios-star' : 'ios-star-outline'
-
-  const toggleHandler = useCallback(() => {
-    console.log(postId)
-    disptach(toggleBooked(postId))
-  }, [disptach, postId])
+  const booked = useSelector(state =>
+    state.post.bookedPosts.some(post => post.id === postId)
+  )
 
   useEffect(() => {
-    navigation.setParams({toggleHandler})
-  }, [])
-
-  useEffect(() => {
-    navigation.setParams({booked})
+    navigation.setParams({ booked })
   }, [booked])
 
-  
-  navigation.setOptions({ 
-    title: postId, 
-    headerTitle: new Date(date).toLocaleDateString(),
-    headerRight: (props) => (
-      <HeaderButtons HeaderButtonComponent={AppheaderIcon}>         
-        <Item title="Take photo" iconName={iconName} onPress={toggleHandler} />      
-      </HeaderButtons>
-    ),
-  })
+  const toggleHandler = useCallback(() => {
+    dispatch(toogleBooked(post))
+  }, [dispatch, post])
 
-
+  useEffect(() => {
+    navigation.setParams({ toggleHandler })
+  }, [toggleHandler])
 
   const removeHandler = () => {
     Alert.alert(
-      "Удаление поста",
-      "Вы точно хотите удалить пост?",
+      'Удаление поста',
+      'Вы точно хотите удалить пост?',
       [
         {
-          text: "Нет",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
+          text: 'Отменить',
+          style: 'cancel'
         },
-        { text: "Да", onPress: () => {
-          navigation.navigate('Main')  
-          disptach(removePost(postId))
-          } 
+        {
+          text: 'Удалить',
+          style: 'destructive',
+          onPress() {
+            navigation.navigate('Main')
+            dispatch(removePost(postId))
+          }
         }
-      ]
-    );
+      ],
+      { cancelable: false }
+    )
   }
 
-  if(!post) {
+  if (!post) {
     return null
   }
 
   return (
-    <ScrollView style={styles.textWrap}>
-      <Image style={styles.image} source={{uri: post.img}}/>
-      <Text>{post.text}</Text>
-      <Button title={'Удалить'} color={THEME.DANGER_COLOR} onPress={removeHandler}/>
-    </ScrollView> 
+    <ScrollView>
+      <Image source={{ uri: post.img }} style={styles.image} />
+      <View style={styles.textWrap}>
+        <Text style={styles.title}>{post.text}</Text>
+      </View>
+      <Button
+        title='Удалить'
+        color={THEME.DANGER_COLOR}
+        onPress={removeHandler}
+      />
+    </ScrollView>
   )
+}
+
+PostScreen.navigationOptions = ({ navigation }) => {
+  const date = navigation.getParam('date')
+  const booked = navigation.getParam('booked')
+  const toggleHandler = navigation.getParam('toggleHandler')
+  const iconName = booked ? 'ios-star' : 'ios-star-outline'
+  return {
+    headerTitle: 'Пост от ' + new Date(date).toLocaleDateString(),
+    headerRight: (
+      <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
+        <Item title='Take photo' iconName={iconName} onPress={toggleHandler} />
+      </HeaderButtons>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
@@ -82,7 +100,7 @@ const styles = StyleSheet.create({
     height: 200
   },
   textWrap: {
-    padding: 10,
+    padding: 10
   },
   title: {
     fontFamily: 'open-regular'

@@ -1,31 +1,19 @@
-import React, {useEffect} from 'react';
-import { StyleSheet, Text, View, Button, FlatList} from 'react-native';
-import { AppheaderIcon } from '../components/AppHeaderIcon';
-import {useDispatch, useSelector} from 'react-redux';
+import React, { useEffect } from 'react'
+import { View, StyleSheet, ActivityIndicator } from 'react-native'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
-import { Post } from '../components/Post';
-import { loadPosts } from '../store/actions/post';
-
+import { useDispatch, useSelector } from 'react-redux'
+import { AppHeaderIcon } from '../components/AppHeaderIcon'
+import { PostList } from '../components/PostList'
+import { loadPosts } from '../store/actions/post'
+import { THEME } from '../theme'
 
 export const MainScreen = ({ navigation }) => {
-
-  navigation.setOptions({ 
-    title:'Главная',
-    headerRight: (props) => (
-      <HeaderButtons HeaderButtonComponent={AppheaderIcon}>         
-        <Item title="Take photo" iconName="ios-camera" onPress={()=>navigation.navigate('Create')}/>      
-      </HeaderButtons>
-    ),
-    headerLeft: (props) => (
-      <HeaderButtons HeaderButtonComponent={AppheaderIcon}>         
-        <Item title="Toggle Drawer" iconName="ios-menu" onPress={()=>navigation.toggleDrawer()} />      
-      </HeaderButtons>
-    ) 
-  })
-
-
-  const openPosthandler = post => {
-    navigation.navigate('Post', { postId: post.id, date: post.date })
+  const openPostHandler = post => {
+    navigation.navigate('Post', {
+      postId: post.id,
+      date: post.date,
+      booked: post.booked
+    })
   }
 
   const dispatch = useDispatch()
@@ -35,22 +23,45 @@ export const MainScreen = ({ navigation }) => {
   }, [dispatch])
 
   const allPosts = useSelector(state => state.post.allPosts)
+  const loading = useSelector(state => state.post.loading)
 
+  if (loading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator color={THEME.MAIN_COLOR} />
+      </View>
+    )
+  }
 
-  return (
-    <View style={styles.wrapper}>
-      <FlatList data={allPosts}
-        keyExtractor={post => post.id.toString()}
-        renderItem={({ item }) => <Post post={item} onOpen={openPosthandler} />
-        } />
-    </View>
-  )
-
-
+  return <PostList data={allPosts} onOpen={openPostHandler} />
 }
 
+MainScreen.navigationOptions = ({ navigation }) => ({
+  headerTitle: 'Мой блог',
+  headerRight: (
+    <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
+      <Item
+        title='Take photo'
+        iconName='ios-camera'
+        onPress={() => navigation.push('Create')}
+      />
+    </HeaderButtons>
+  ),
+  headerLeft: (
+    <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
+      <Item
+        title='Toggle Drawer'
+        iconName='ios-menu'
+        onPress={() => navigation.toggleDrawer()}
+      />
+    </HeaderButtons>
+  )
+})
+
 const styles = StyleSheet.create({
-  wrapper: {
-    padding: 10
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 })
